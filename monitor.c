@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 14:07:22 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/01/30 15:56:27 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/02/06 14:50:04 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int	all_philos_ate(t_data *data)
 	count = 0;
 	if (data->must_eat == -1)
 		return (0);
-
 	i = 0;
 	while (i < data->num_philos)
 	{
@@ -30,43 +29,67 @@ int	all_philos_ate(t_data *data)
 		pthread_mutex_unlock(&data->death_mutex);
 		i++;
 	}
-	return (count == data->num_philos); // Only return true if ALL philosophers have eaten enough
+	return (count == data->num_philos);
 }
 
 void	*monitor_philosophers(void *arg)
 {
-	t_data	*data;
-	int		i;
+    t_data	*data;
+    int		i;
 
-	data = (t_data *)arg;
-	while (1)
-	{
-		i = 0;
-		while (i < data->num_philos)
-		{
-			pthread_mutex_lock(&data->death_mutex);
-			if ((get_time() - data->philos[i].last_meal_time) >= data->time_to_die)
-			{
-				data->simulation_ended = 1;
-				printf("%ld %d died\n", get_time() - data->start_time, data->philos[i].id);
-				pthread_mutex_unlock(&data->death_mutex);
-				return (NULL); // ✅ Exit properly to avoid re-unlocking
-			}
-			pthread_mutex_unlock(&data->death_mutex);
+    data = (t_data *)arg;
+    while (!data->simulation_ended)
+    {
+        i = 0;
+        while (i < data->num_philos)
+        {
+            pthread_mutex_lock(&data->death_mutex);
+            if ((get_time() - data->philos[i].last_meal_time) >= data->time_to_die)
+            {
+                print_action(&data->philos[i], "died");
+                data->simulation_ended = 1;
+                pthread_mutex_unlock(&data->death_mutex);
+                return (NULL);  // 🚨 Exit the monitor thread immediately
+            }
+            pthread_mutex_unlock(&data->death_mutex);
 			i++;
-		}
-
-		// ✅ Exit if simulation ended
-		pthread_mutex_lock(&data->death_mutex);
-		if (data->simulation_ended)
-		{
-			pthread_mutex_unlock(&data->death_mutex);
-			break;
-		}
-		pthread_mutex_unlock(&data->death_mutex);
-
-		usleep(500);
-	}
-	return (NULL);
+        }
+		if (check_if_all_ate(data))
+        	return NULL;
+        usleep(500);  // Check every 0.5ms
+    }
+    return (NULL);
 }
+
+int check_if_all_ate(t_data *data)
+{
+    if (data->must_eat == -1)
+        return 0; // No meal limit, continue simulation
+
+    int i;
+    int all_ate = 1;
+
+    for (i = 0; i < data->num_philos; i++)
+    {
+        pthread_mutex_lock(&data->death_mutex);
+        if (data->philos[i].meals_eaten < data->must_eat)
+        {
+            all_ate = 0; // Not all philosophers have finished eating
+            pthread_mutex_unlock(&data->death_mutex);
+            break;
+        }
+        pthread_mutex_unlock(&data->death_mutex);
+    }
+
+    if (all_ate) // If all philosophers have eaten enough times
+    {
+        pthread_mutex_lock(&data->death_mutex);
+        data->simulation_ended = 1;
+        pthread_mutex_unlock(&data->death_mutex);
+        return 1; // Stop simulation
+    }
+
+    return 0; // Continue simulation
+}
+
 

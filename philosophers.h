@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 15:32:39 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/01/30 16:34:16 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/02/06 14:40:10 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	destroy_mutexes(t_data *data);
 void	free_memory(t_data *data);
 void	free_resources(t_data *data);
 void	join_threads(t_data *data);
+int		check_if_all_ate(t_data *data);
 void	free_resources(t_data *data);
 
 #endif

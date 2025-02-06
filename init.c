@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 13:49:49 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/01/30 16:40:41 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/02/06 14:37:20 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,19 @@ int	init_data(t_data *data)
 	data->philos = malloc(sizeof(t_philo) * data->num_philos);
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->num_philos);
 	if (!data->philos || !data->forks)
-		return (printf("Error: Memory allocation failed\n"), 1);
-	if (init_forks(data) != 0)
+	{
+		printf("Error: Memory allocation failed\n");
 		return (1);
+	}
+	if (init_forks(data) != 0)
+	{
+		return (1);
+
+	}
 	init_philosophers(data);
+	data->start_time = get_time();
 	return (0);
 }
-
 
 int	start_threads(t_data *data)
 {
@@ -73,7 +79,8 @@ int	start_threads(t_data *data)
 			return (printf("Error: Failed to create thread\n"), 1);
 		i++;
 	}
-	if (pthread_create(&monitor_thread, NULL, monitor_philosophers, data) != 0)
+	if (pthread_create(&monitor_thread, NULL, monitor_philosophers,
+			data) != 0)
 		return (printf("Error: Failed to create monitor thread\n"), 1);
 	i = 0;
 	while (i < data->num_philos)
@@ -84,3 +91,4 @@ int	start_threads(t_data *data)
 	pthread_join(monitor_thread, NULL);
 	return (0);
 }
+

@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 14:02:15 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/01/30 16:06:10 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/02/06 14:51:39 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,25 +47,27 @@ void	eat(t_philo *philo)
 
 void	*philosopher_routine(void *arg)
 {
-	t_philo	*philo = (t_philo *)arg;
+	t_philo	*philo;
 
-	// ✅ Stagger even philosophers to prevent unfair fork grabbing
+	philo = (t_philo *)arg;
+    if (philo->data->num_philos == 1)
+    {
+        print_action(philo, "has taken a fork");
+        smart_sleep(philo->data->time_to_die);  // Wait for inevitable death
+        return (NULL);  // Exit immediately
+    }
 	if (philo->id % 2 == 0)
 		usleep(1000);
-
 	while (!philo->data->simulation_ended)
 	{
 		print_action(philo, "is thinking");
-
-		// ✅ Delay before attempting to take forks to prevent unfair priority
+		if (philo->data->simulation_ended) break;
 		usleep(200);
-
-		// ✅ Lock forks with fairness
 		if (philo->id % 2 == 0)
 		{
 			pthread_mutex_lock(philo->right_fork);
 			print_action(philo, "has taken a fork");
-			usleep(100); // ✅ Prevents instant re-locking advantage
+			usleep(100);
 			pthread_mutex_lock(philo->left_fork);
 		}
 		else
@@ -75,27 +77,18 @@ void	*philosopher_routine(void *arg)
 			usleep(100);
 			pthread_mutex_lock(philo->right_fork);
 		}
-
 		print_action(philo, "has taken a fork");
 		print_action(philo, "is eating");
-
 		pthread_mutex_lock(&philo->data->death_mutex);
 		philo->last_meal_time = get_time();
 		philo->meals_eaten++;
 		pthread_mutex_unlock(&philo->data->death_mutex);
-
 		smart_sleep(philo->data->time_to_eat);
-
-		// ✅ Release forks
 		pthread_mutex_unlock(philo->left_fork);
 		pthread_mutex_unlock(philo->right_fork);
-
 		print_action(philo, "is sleeping");
 		smart_sleep(philo->data->time_to_sleep);
-
-		// ✅ Add a waiting period before taking forks again (Fairness)
 		usleep(500);
 	}
 	return (NULL);
 }
-
