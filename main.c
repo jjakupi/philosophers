@@ -25,22 +25,23 @@ int	parse_arguments(t_data *data, int argc, char **argv)
 	return (0);
 }
 
-int	main(int argc, char **argv)
+int main(int argc, char **argv)
 {
-	t_data	data;
+    t_data data;
 
-	if (parse_arguments(&data, argc, argv) != 0)
-		return (1);
-	if (init_data(&data) != 0)
-	{
-		cleanup(&data);
-		return (1);
-	}
-	if (start_threads(&data) != 0)
-	{
-		cleanup(&data);
-		return (1);
-	}
-	cleanup(&data);
-	return (0);
+    if (parse_arguments(&data, argc, argv) != 0)
+        return 1;
+    if (init_data(&data) != 0)
+    {
+        cleanup(&data);
+        return 1;
+    }
+    if (start_threads(&data) != 0)
+    {
+        cleanup(&data);
+        return 1;
+    }
+    cleanup(&data);
+
+    return 0;
 }

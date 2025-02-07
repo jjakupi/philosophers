@@ -42,20 +42,20 @@ void	print_action(t_philo *philo, char *action)
 	if (!philo->data->simulation_ended)
 	{
 		timestamp = get_time() - philo->data->start_time;
-		printf("%ld %d %s\n", timestamp, philo->id, action);
-		if (strcmp(action, "has taken a fork") == 0)
-			printf("🔍 DEBUG: Philosopher %d picked up a fork at %ld ms\n",
-				philo->id, timestamp);
-		else if (strcmp(action, "is eating") == 0)
-			printf("✅ Philosopher %d is eating at %ld ms\n",
-				philo->id, timestamp);
+
+		// 🎨 Apply color based on the action
+		if (strcmp(action, "is eating") == 0)
+			printf(GREEN BOLD "%ld %d %s\n" RESET, timestamp, philo->id, action); // Green and bold
 		else if (strcmp(action, "is sleeping") == 0)
-			printf("🛏️ Philosopher %d is sleeping at %ld ms\n",
-				philo->id, timestamp);
+			printf(BLUE "%ld %d %s\n" RESET, timestamp, philo->id, action); // Blue
 		else if (strcmp(action, "is thinking") == 0)
-			printf("🤔 Philosopher %d is thinking at %ld ms\n",
-				philo->id, timestamp);
+			printf(CYAN "%ld %d %s\n" RESET, timestamp, philo->id, action); // Cyan
+		else if (strcmp(action, "has taken a fork") == 0)
+			printf(YELLOW "%ld %d %s\n" RESET, timestamp, philo->id, action); // Yellow
+		else if (strcmp(action, "died") == 0)
+			printf(RED BOLD "%ld %d %s\n" RESET, timestamp, philo->id, action);
+		else
+			printf("%ld %d %s\n", timestamp, philo->id, action); // Default color
 	}
 	pthread_mutex_unlock(&philo->data->print_mutex);
 }
-

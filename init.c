@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 13:49:49 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/02/06 14:37:20 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/02/06 15:31:18 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ int	init_data(t_data *data)
 	if (init_forks(data) != 0)
 	{
 		return (1);
-
 	}
 	init_philosophers(data);
 	data->start_time = get_time();
