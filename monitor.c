@@ -6,11 +6,35 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 14:07:22 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/02/06 14:50:04 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/05/23 13:26:36 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+void	eat(t_philo *philo)
+{
+	pthread_mutex_lock(philo->left_fork);
+	print_action(philo, "has taken a fork");
+	pthread_mutex_lock(philo->right_fork);
+	print_action(philo, "has taken a fork");
+
+	pthread_mutex_lock(&philo->data->death_mutex);
+	philo->last_meal_time = get_time();
+	philo->meals_eaten++;
+
+	// ✅ Check if this philosopher reached must_eat
+	if (philo->meals_eaten == philo->data->must_eat)
+		philo->data->simulation_ended = 1;
+
+	pthread_mutex_unlock(&philo->data->death_mutex);
+
+	print_action(philo, "is eating");
+	smart_sleep(philo->data->time_to_eat);
+
+	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
+}
 
 int	all_philos_ate(t_data *data)
 {

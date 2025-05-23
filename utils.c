@@ -34,6 +34,15 @@ long	get_time(void)
 	return ((tv.tv_sec * 1000L) + (tv.tv_usec / 1000L));
 }
 
+void	smart_sleep(long time)
+{
+	long	start;
+
+	start = get_time();
+	while ((get_time() - start) < time)
+		usleep(100);
+}
+
 void	print_action(t_philo *philo, char *action)
 {
 	long	timestamp;
