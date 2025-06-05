@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 14:07:22 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/05 16:18:57 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/05 17:14:51 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,17 +71,21 @@ void	*monitor_philosophers(void *arg)
             pthread_mutex_lock(&data->death_mutex);
             if ((get_time() - data->philos[i].last_meal_time) >= data->time_to_die)
             {
-                print_action(&data->philos[i], "died");
                 data->simulation_ended = 1;
                 pthread_mutex_unlock(&data->death_mutex);
-                return (NULL);  // 🚨 Exit the monitor thread immediately
+
+                // Now that we’ve unlocked death_mutex, it’s safe to print:
+                print_action(&data->philos[i], "died");
+                return (NULL);
             }
             pthread_mutex_unlock(&data->death_mutex);
-			i++;
+            i++;
         }
-		if (check_if_all_ate(data))
-        	return NULL;
-        usleep(100);  // Check every 0.5ms
+
+        if (check_if_all_ate(data))
+            return (NULL);
+
+        usleep(100);  // Sleep 100 µs (0.1 ms) before checking again
     }
     return (NULL);
 }

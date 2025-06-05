@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 14:02:15 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/05 16:10:03 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/05 17:20:05 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,21 @@ void	*philosopher_routine(void *arg)
 		return (NULL);
 	}
 	initial_delay(philo);
-	while (!philo->data->simulation_ended)
+	while (1)
 	{
+		// Acquire death_mutex just to read simulation_ended
+		pthread_mutex_lock(&philo->data->death_mutex);
+		if (philo->data->simulation_ended)
+		{
+			pthread_mutex_unlock(&philo->data->death_mutex);
+			break;
+		}
+		pthread_mutex_unlock(&philo->data->death_mutex);
+
 		sleep_and_think(philo);
 		pickup_forks(philo);
 		eat_and_release(philo);
 	}
+
 	return (NULL);
 }

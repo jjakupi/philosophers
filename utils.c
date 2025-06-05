@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:51:35 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/05 16:45:26 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/05 17:18:17 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,18 @@ long	get_time(void)
 void smart_sleep(long time, t_data *data)
 {
     long start = get_time();
-
     while ((get_time() - start) < time)
     {
-        // 1) If simulation ended, stop sleeping immediately
+        // Lock just to read the flag
+        pthread_mutex_lock(&data->death_mutex);
         if (data->simulation_ended)
+        {
+            pthread_mutex_unlock(&data->death_mutex);
             break;
+        }
+        pthread_mutex_unlock(&data->death_mutex);
 
-        // 2) Sleep a smaller chunk (10 µs) for faster wake-ups:
-        usleep(100);
+        usleep(100);  // still sleep in small chunks
     }
 }
 
