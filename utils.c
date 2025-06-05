@@ -52,19 +52,18 @@ void	print_action(t_philo *philo, char *action)
 	{
 		timestamp = get_time() - philo->data->start_time;
 
-		// 🎨 Apply color based on the action
 		if (strcmp(action, "is eating") == 0)
-			printf(GREEN BOLD "%ld %d %s\n" RESET, timestamp, philo->id, action); // Green and bold
+			printf(GREEN BOLD "%ld %d %s\n" RESET, timestamp, philo->id, action);
 		else if (strcmp(action, "is sleeping") == 0)
-			printf(BLUE "%ld %d %s\n" RESET, timestamp, philo->id, action); // Blue
+			printf(BLUE "%ld %d %s\n" RESET, timestamp, philo->id, action);
 		else if (strcmp(action, "is thinking") == 0)
-			printf(CYAN "%ld %d %s\n" RESET, timestamp, philo->id, action); // Cyan
+			printf(CYAN "%ld %d %s\n" RESET, timestamp, philo->id, action);
 		else if (strcmp(action, "has taken a fork") == 0)
-			printf(YELLOW "%ld %d %s\n" RESET, timestamp, philo->id, action); // Yellow
+			printf(YELLOW "%ld %d %s\n" RESET, timestamp, philo->id, action);
 		else if (strcmp(action, "died") == 0)
 			printf(RED BOLD "%ld %d %s\n" RESET, timestamp, philo->id, action);
 		else
-			printf("%ld %d %s\n", timestamp, philo->id, action); // Default color
+			printf("%ld %d %s\n", timestamp, philo->id, action);
 	}
 	pthread_mutex_unlock(&philo->data->print_mutex);
 }
