@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 14:07:22 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/05 14:54:46 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/05 16:18:57 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ void	eat(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->death_mutex);
 
 	print_action(philo, "is eating");
-	smart_sleep(philo->data->time_to_eat);
+	smart_sleep(philo->data->time_to_eat, philo->data);
+
 
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
@@ -80,7 +81,7 @@ void	*monitor_philosophers(void *arg)
         }
 		if (check_if_all_ate(data))
         	return NULL;
-        usleep(500);  // Check every 0.5ms
+        usleep(100);  // Check every 0.5ms
     }
     return (NULL);
 }

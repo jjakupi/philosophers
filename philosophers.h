@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 15:32:39 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/02/07 11:23:31 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/05 16:06:20 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int		start_threads(t_data *data);
 void	*philosopher_routine(void *arg);
 void	*monitor_philosophers(void *arg);
 long	get_time(void);
-void	smart_sleep(long time);
+void	smart_sleep(long time, t_data *data);
 void	print_action(t_philo *philo, char *action);
 void	eat(t_philo *philo);
 void	cleanup(t_data *data); // ✅ Add cleanup function
