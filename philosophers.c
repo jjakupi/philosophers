@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 14:02:15 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/05 07:56:16 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/05 14:56:27 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,9 @@ static void	handle_single_philo(t_philo *philo)
 {
 	print_action(philo, "has taken a fork");
 	smart_sleep(philo->data->time_to_die);
-
-	/* Prevent the monitor from also printing “died” */
 	pthread_mutex_lock(&philo->data->death_mutex);
 	philo->data->simulation_ended = 1;
 	pthread_mutex_unlock(&philo->data->death_mutex);
-
 	print_action(philo, "died");
 }
 

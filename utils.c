@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/05 11:51:35 by jjakupi           #+#    #+#             */
+/*   Updated: 2025/06/05 13:45:26 by jjakupi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosophers.h"
 
 int	ft_atoi(const char *str)
@@ -40,7 +52,7 @@ void	smart_sleep(long time)
 
 	start = get_time();
 	while ((get_time() - start) < time)
-		usleep(100);
+		usleep(500);
 }
 
 void	print_action(t_philo *philo, char *action)
