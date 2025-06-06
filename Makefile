@@ -1,8 +1,8 @@
 NAME = philo
-SRC = main.c  utils.c init.c philosophers.c monitor.c cleanup.c
+SRC = main.c parse.c  utils.c init.c philosophers.c monitor.c cleanup.c
 OBJ = $(SRC:.c=.o)
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
 
