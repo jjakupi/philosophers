@@ -6,11 +6,32 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:51:54 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/05 11:51:56 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/06 14:12:49 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
+
+int	is_positive_number(const char *str)
+{
+	int	i;
+
+	if (!str || !str[0])
+		return (0);
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	i = 0;
+	while (str[i] == '0')
+		i++;
+	if (!str[i])
+		return (0);
+	return (1);
+}
 
 int	parse_arguments(t_data *data, int argc, char **argv)
 {
@@ -24,35 +45,39 @@ int	parse_arguments(t_data *data, int argc, char **argv)
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
-	data->must_eat = (argc == 6) ? ft_atoi(argv[5]) : -1;
+	if (argc == 6)
+		data->must_eat = ft_atoi(argv[5]);
+	else
+		data->must_eat = -1;
 	data->simulation_ended = 0;
-	if (data->num_philos < 1 || data->time_to_die < 0 ||
-		data->time_to_eat < 0 || data->time_to_sleep < 0 ||
-		(argc == 6 && data->must_eat <= 0))
+	if (!is_positive_number(argv[1])
+		|| !is_positive_number(argv[2])
+		|| !is_positive_number(argv[3])
+		|| !is_positive_number(argv[4])
+		|| (argc == 6 && !is_positive_number(argv[5])))
 	{
-		printf("Error: Invalid argument values.\n");
+		printf("Error: All arguments must be positive integers.\n");
 		return (1);
 	}
 	return (0);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-    t_data data;
+	t_data	data;
 
-    if (parse_arguments(&data, argc, argv) != 0)
-        return 1;
-    if (init_data(&data) != 0)
-    {
-        cleanup(&data);
-        return 1;
-    }
-    if (start_threads(&data) != 0)
-    {
-        cleanup(&data);
-        return 1;
-    }
-    cleanup(&data);
-
-    return 0;
+	if (parse_arguments(&data, argc, argv) != 0)
+		return (1);
+	if (init_data(&data) != 0)
+	{
+		cleanup(&data);
+		return (1);
+	}
+	if (start_threads(&data) != 0)
+	{
+		cleanup(&data);
+		return (1);
+	}
+	cleanup(&data);
+	return (0);
 }

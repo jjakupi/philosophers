@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.h                                     :+:      :+:    :+:   */
+/*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 15:32:39 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/05 16:06:20 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/06 14:19:46 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,8 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
-#include <string.h>
+# include <string.h>
 
-#define RESET   "\033[0m"   // Reset color
-#define RED     "\033[31m"  // Red color
-#define GREEN   "\033[32m"  // Green color
-#define YELLOW  "\033[33m"  // Yellow color
-#define BLUE    "\033[34m"  // Blue color
-#define CYAN    "\033[36m"  // Cyan color
-#define BOLD    "\033[1m"   // Bold text
-
-// Struct to hold philosopher data
 typedef struct s_philo
 {
 	int				id;
@@ -74,4 +65,3 @@ void	destroy_mutexes(t_data *data);
 int		check_if_all_ate(t_data *data);
 
 #endif
-

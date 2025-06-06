@@ -6,11 +6,11 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 13:49:49 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/02/06 15:31:18 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/06 14:08:35 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
 
 int	init_forks(t_data *data)
 {
@@ -78,16 +78,18 @@ int	start_threads(t_data *data)
 			return (printf("Error: Failed to create thread\n"), 1);
 		i++;
 	}
-	if (pthread_create(&monitor_thread, NULL, monitor_philosophers,
-			data) != 0)
-		return (printf("Error: Failed to create monitor thread\n"), 1);
+	if (data->num_philos > 1)
+	{
+		if (pthread_create(&monitor_thread, NULL,
+				monitor_philosophers, data) != 0)
+			return (printf("Error: Failed to create monitor thread\n"), 1);
+		pthread_join(monitor_thread, NULL);
+	}
 	i = 0;
 	while (i < data->num_philos)
 	{
 		pthread_join(data->philos[i].thread, NULL);
 		i++;
 	}
-	pthread_join(monitor_thread, NULL);
 	return (0);
 }
-

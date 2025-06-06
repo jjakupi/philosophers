@@ -6,11 +6,11 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 14:07:22 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/05 17:14:51 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/06 14:08:26 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
+#include "philo.h"
 
 void	eat(t_philo *philo)
 {
@@ -18,21 +18,14 @@ void	eat(t_philo *philo)
 	print_action(philo, "has taken a fork");
 	pthread_mutex_lock(philo->right_fork);
 	print_action(philo, "has taken a fork");
-
 	pthread_mutex_lock(&philo->data->death_mutex);
 	philo->last_meal_time = get_time();
 	philo->meals_eaten++;
-
-	// ✅ Check if this philosopher reached must_eat
 	if (philo->meals_eaten == philo->data->must_eat)
 		philo->data->simulation_ended = 1;
-
 	pthread_mutex_unlock(&philo->data->death_mutex);
-
 	print_action(philo, "is eating");
 	smart_sleep(philo->data->time_to_eat, philo->data);
-
-
 	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
 }
@@ -57,37 +50,42 @@ int	all_philos_ate(t_data *data)
 	return (count == data->num_philos);
 }
 
+static void	check_death(t_data *data)
+{
+	int		i;
+
+	i = 0;
+	while (i < data->num_philos)
+	{
+		pthread_mutex_lock(&data->death_mutex);
+		if ((get_time() - data->philos[i].last_meal_time)
+			>= data->time_to_die)
+		{
+			data->simulation_ended = 1;
+			pthread_mutex_unlock(&data->death_mutex);
+			print_action(&data->philos[i], "died");
+			return ;
+		}
+		pthread_mutex_unlock(&data->death_mutex);
+		i++;
+	}
+}
+
 void	*monitor_philosophers(void *arg)
 {
-    t_data	*data;
-    int		i;
+	t_data	*data;
 
-    data = (t_data *)arg;
-    while (!data->simulation_ended)
-    {
-        i = 0;
-        while (i < data->num_philos)
-        {
-            pthread_mutex_lock(&data->death_mutex);
-            if ((get_time() - data->philos[i].last_meal_time) >= data->time_to_die)
-            {
-                data->simulation_ended = 1;
-                pthread_mutex_unlock(&data->death_mutex);
-
-                // Now that we’ve unlocked death_mutex, it’s safe to print:
-                print_action(&data->philos[i], "died");
-                return (NULL);
-            }
-            pthread_mutex_unlock(&data->death_mutex);
-            i++;
-        }
-
-        if (check_if_all_ate(data))
-            return (NULL);
-
-        usleep(100);  // Sleep 100 µs (0.1 ms) before checking again
-    }
-    return (NULL);
+	data = (t_data *)arg;
+	while (!data->simulation_ended)
+	{
+		check_death(data);
+		if (data->simulation_ended)
+			return (NULL);
+		if (check_if_all_ate(data))
+			return (NULL);
+		usleep(100);
+	}
+	return (NULL);
 }
 
 int	check_if_all_ate(t_data *data)
@@ -116,4 +114,3 @@ int	check_if_all_ate(t_data *data)
 	}
 	return (0);
 }
-

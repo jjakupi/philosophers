@@ -6,12 +6,11 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 14:02:15 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/05 17:20:05 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/06 14:14:33 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosophers.h"
-
+#include "philo.h"
 
 static void	handle_single_philo(t_philo *philo)
 {
@@ -27,7 +26,6 @@ static void	initial_delay(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
 		smart_sleep(2, philo->data);
-
 }
 
 static void	pickup_forks(t_philo *philo)
@@ -37,7 +35,6 @@ static void	pickup_forks(t_philo *philo)
 		pthread_mutex_lock(philo->right_fork);
 		print_action(philo, "has taken a fork");
 		smart_sleep(1, philo->data);
-
 		pthread_mutex_lock(philo->left_fork);
 	}
 	else
@@ -45,7 +42,6 @@ static void	pickup_forks(t_philo *philo)
 		pthread_mutex_lock(philo->left_fork);
 		print_action(philo, "has taken a fork");
 		smart_sleep(2, philo->data);
-
 		pthread_mutex_lock(philo->right_fork);
 	}
 	print_action(philo, "has taken a fork");
@@ -73,8 +69,9 @@ static void	sleep_and_think(t_philo *philo)
 
 void	*philosopher_routine(void *arg)
 {
-	t_philo	*philo = arg;
+	t_philo	*philo;
 
+	philo = arg;
 	if (philo->data->num_philos == 1)
 	{
 		handle_single_philo(philo);
@@ -83,19 +80,16 @@ void	*philosopher_routine(void *arg)
 	initial_delay(philo);
 	while (1)
 	{
-		// Acquire death_mutex just to read simulation_ended
 		pthread_mutex_lock(&philo->data->death_mutex);
 		if (philo->data->simulation_ended)
 		{
 			pthread_mutex_unlock(&philo->data->death_mutex);
-			break;
+			break ;
 		}
 		pthread_mutex_unlock(&philo->data->death_mutex);
-
 		sleep_and_think(philo);
 		pickup_forks(philo);
 		eat_and_release(philo);
 	}
-
 	return (NULL);
 }
