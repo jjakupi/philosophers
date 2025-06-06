@@ -2,7 +2,7 @@ NAME = philo
 SRC = main.c  utils.c init.c philosophers.c monitor.c cleanup.c
 OBJ = $(SRC:.c=.o)
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -pthread
+CFLAGS = -Wall -Wextra -Werror 
 
 all: $(NAME)
 

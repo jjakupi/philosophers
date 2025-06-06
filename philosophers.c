@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 14:02:15 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/06 14:14:33 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/06 14:53:01 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,6 @@ static void	handle_single_philo(t_philo *philo)
 	philo->data->simulation_ended = 1;
 	pthread_mutex_unlock(&philo->data->death_mutex);
 	print_action(philo, "died");
-}
-
-static void	initial_delay(t_philo *philo)
-{
-	if (philo->id % 2 == 0)
-		smart_sleep(2, philo->data);
 }
 
 static void	pickup_forks(t_philo *philo)
@@ -77,7 +71,8 @@ void	*philosopher_routine(void *arg)
 		handle_single_philo(philo);
 		return (NULL);
 	}
-	initial_delay(philo);
+	if (philo->id % 2 == 0)
+		smart_sleep(2, philo->data);
 	while (1)
 	{
 		pthread_mutex_lock(&philo->data->death_mutex);

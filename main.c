@@ -6,7 +6,7 @@
 /*   By: jjakupi <marvin@42lausanne.ch>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 11:51:54 by jjakupi           #+#    #+#             */
-/*   Updated: 2025/06/06 14:12:49 by jjakupi          ###   ########.fr       */
+/*   Updated: 2025/06/06 14:30:36 by jjakupi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ int	is_positive_number(const char *str)
 	i = 0;
 	while (str[i])
 	{
+		if (str[i] == '+')
+			i++;
 		if (str[i] < '0' || str[i] > '9')
 			return (0);
 		i++;
